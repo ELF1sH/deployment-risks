@@ -1,11 +1,18 @@
 ## Delete all pods
 
+## Start from scratch
+
+1. 
 ```
 kubectl delete daemonsets,replicasets,services,deployments,pods,rc,ingress --all --all-namespaces
-kubectl delete deployment backend frontend mongo
 
-minikube image load <image-name>
+или
+
+kubectl delete deployment backend frontend mongo
 ```
+
+2. Убить все процессы minikube (tunnel, dashboard, etc.)
+3. Удалить все контейнеры, образы, сборки, тома
 
 ## Add pods
 
