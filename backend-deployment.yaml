@@ -1,0 +1,35 @@
+# backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: idurar-erp-crm-backend
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8888
+          env:
+            - name: NODE_ENV
+              value: "development"
+            - name: DATABASE
+              value: "mongodb://mongo:27017/local-idurar-erp-crp"
+            - name: PORT
+              value: "8888"
+            - name: NODE_OPTIONS
+              value: "--openssl-legacy-provider"
+            - name: JWT_SECRET
+              value: "secret_key_1234"
+            - name: PUBLIC_SERVER_FILE
+              value: http://backend.localhost/
+          command: ["sh", "-c", "npm run setup && npm run dev"]
