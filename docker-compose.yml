@@ -4,6 +4,7 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+      - pdf_storage:/usr/src/app/pdf-storage
     ports:
       - "8888:8888"
     environment:
@@ -11,6 +12,9 @@ services:
       - DATABASE=mongodb://mongo:27017/local-idurar-erp-crp
       - PORT=8888
       - NODE_OPTIONS=--openssl-legacy-provider
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PDF_OUTPUT_DIR=/usr/src/app/pdf-storage
       - JWT_SECRET=secret_key_1234
 
     command: sh -c "npm run setup && npm run dev"
@@ -20,6 +24,28 @@ services:
 
     depends_on:
       - mongo
+      - redis
+
+  pdf-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.pdf-worker
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+      - pdf_storage:/usr/src/app/pdf-storage
+    environment:
+      - NODE_ENV=development
+      - DATABASE=mongodb://mongo:27017/local-idurar-erp-crp
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PDF_OUTPUT_DIR=/usr/src/app/pdf-storage
+    command: node src/workers/pdfWorker.js
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - server-mongo
 
   frontend:
     build: ./frontend
@@ -43,8 +69,17 @@ services:
     networks:
       - server-mongo
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - server-mongo
+
 volumes:
   mongodb_data:
+  pdf_storage:
 
 networks:
   server-mongo:
