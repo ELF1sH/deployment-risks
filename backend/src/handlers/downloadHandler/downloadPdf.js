@@ -28,7 +28,7 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
 
       // Получаем имя PDF-файла
       const pdfFileName = result.pdf; // Это имя файла PDF (предполагается, что оно там хранится)
-      const pdfDirectory = '/usr/src/app/pdf-storage'; // Путь к директории
+      const pdfDirectory = process.env.PDF_STORAGE_PATH; // Путь к директории
       const fullPath = path.join(pdfDirectory, pdfFileName); // Полный путь к файлу
 
       // Загружаем PDF-файл

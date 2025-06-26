@@ -14,7 +14,8 @@ services:
       - NODE_OPTIONS=--openssl-legacy-provider
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - PDF_OUTPUT_DIR=/usr/src/app/pdf-storage
+      - PDF_OUTPUT_DIR=./pdf-storage
+      - PDF_STORAGE_PATH=/usr/src/app/pdf-storage
       - JWT_SECRET=secret_key_1234
 
     command: sh -c "npm run setup && npm run dev"
